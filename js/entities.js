@@ -9,7 +9,7 @@ class Entities {
         this.gameSprites = gameSprites; // overall game sprites array
         this.sprites = [];
         this.artist = null;
-        if (type != 'button' && type != 'coin')
+        if (type != 'button' && type != 'coin' && type != 'platform')
             this.artist = new SpriteSheetArtist(cc.spritesheet, this.cells);
         this.createSprites();
     }
@@ -36,10 +36,25 @@ class Entities {
         for (let ii=0; ii<this.data.length; ++ii) {
             if (this.type == 'button' || this.type == 'coin')
                 this.createArtist(this.type, ii);
+            else if (this.type == 'platform') this.artist = new PlatformArtist();
 
             sprite = new Sprite(this.type, this.artist);
 
             switch (this.type) {
+                case 'platform':
+                    let pd = this.data[ii];
+
+                    sprite.left = pd.left;
+                    sprite.width = pd.width;
+                    sprite.height = pd.height;
+                    sprite.fillStyle = pd.fillStyle;
+                    sprite.opacity = pd.opacity;
+                    sprite.track = pd.track;
+                    sprite.button = pd.button;
+                    sprite.pulsate = pd.pulsate;
+
+                    sprite.top = calculatePFTop(pd.track);
+                    break;
                 case 'bat':
                     // bat cell width varies, batCells[1] is widest
                     sprite.width = this.cells[1].width;

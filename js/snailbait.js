@@ -4,8 +4,9 @@ class Snailbait {
    constructor() {
       this.gameStarted = false;
       this.bg = new Background();
-      this.pf = new Platforms();
+      //this.pf = new Platforms();
       this.sd = new SpriteData();
+      this.platformVelocity;
       this.runner;
       this.paused = false;
       this.PAUSED_CHECK_INTERVAL = 200;   // milliseconds
@@ -32,14 +33,16 @@ class Snailbait {
   }
 
   createSprites = () => {
-      let bats      = new Entities('bat',      this.sd.batCells,         this.sd.batData,      this.sd, this.sprites);
-      let bees      = new Entities('bee',      this.sd.beeCells,         this.sd.beeData,      this.sd, this.sprites);
-      let snail     = new Entities('snail',    this.sd.snailCells,       this.sd.snailData,    this.sd, this.sprites);
-      let runner    = new Entities('runner',   this.sd.runnerCellsRight, this.sd.runnerData,   this.sd, this.sprites);
-      let rubies    = new Entities('ruby',     this.sd.rubyCells,        this.sd.rubyData,     this.sd, this.sprites);
-      let sapphires = new Entities('sapphire', this.sd.sapphireCells,    this.sd.sapphireData, this.sd, this.sprites);
-      let buttons   = new Entities('button',   this.sd.blueButtonCells,  this.sd.buttonData,   this.sd, this.sprites);
-      let coins     = new Entities('coin',     this.sd.goldCoinCells,    this.sd.coinData,     this.sd, this.sprites);
+      // order is important as you want runner last so he's drawn in front of all others
+      let platforms = new Entities('platform',                   null,         platformData,    null, this.sprites);
+      let bats      = new Entities('bat',            this.sd.batCells,      this.sd.batData, this.sd, this.sprites);
+      let bees      = new Entities('bee',            this.sd.beeCells,      this.sd.beeData, this.sd, this.sprites);
+      let buttons   = new Entities('button',  this.sd.blueButtonCells,   this.sd.buttonData, this.sd, this.sprites);
+      let coins     = new Entities('coin',      this.sd.goldCoinCells,     this.sd.coinData, this.sd, this.sprites);
+      let rubies    = new Entities('ruby',          this.sd.rubyCells,     this.sd.rubyData, this.sd, this.sprites);
+      let sapphires = new Entities('sapphire',  this.sd.sapphireCells, this.sd.sapphireData, this.sd, this.sprites);
+      let snail     = new Entities('snail',        this.sd.snailCells,    this.sd.snailData, this.sd, this.sprites);
+      let runner    = new Entities('runner', this.sd.runnerCellsRight,   this.sd.runnerData, this.sd, this.sprites);
    }
 
   update = () => {
@@ -49,17 +52,22 @@ class Snailbait {
          }, this.PAUSED_CHECK_INTERVAL);
       } else {
          cc.fpsElement.innerHTML = frameRate().toFixed(0) + ' fps';
-         this.pf.setVelocity();
+         //this.pf.setVelocity();
+         this.setPlatformVelocity();
          this.bg.update();    // calls bg class setOffset()
-         this.pf.update();
+         //this.pf.update();
          //this.runner.update();
          this.updateSprites();
       }
    }
 
+   setPlatformVelocity = () => {
+      this.platformVelocity = this.bg.bgVelocity * cc.PLATFORM_VELOCITY_MULTIPLIER;
+   }
+
    draw = () => {
       this.bg.draw();
-      this.pf.draw();
+      //this.pf.draw();
       //this.runner.draw();
       this.drawSprites();
    }

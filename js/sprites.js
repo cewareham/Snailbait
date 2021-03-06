@@ -1,5 +1,18 @@
 "use strict";
 
+class PlatformArtist {
+   draw = (sprite) => {
+      let pfTop = calculatePFTop(sprite.track);
+
+      strokeWeight(cc.PLATFORM_STROKE_WIDTH);   // width of border
+      stroke(cc.PLATFORM_STROKE_STYLE);         // color of border
+      let clr = color(sprite.fillStyle);
+      clr.setAlpha(sprite.opacity*255);
+      fill(clr);                                // fill color
+      rect(sprite.left, pfTop, sprite.width, sprite.height);
+   }
+}
+
 class SpriteSheetArtist {
    constructor(spritesheet, cells) {
        this.cells = cells;
@@ -73,8 +86,13 @@ class Sprite {
 
    setOffset = () => {
       let offset = this.hOffset;
-      offset += game.pf.pfVelocity * deltaTime / 1000;
-      if ('runner' != this.type) this.hOffset = offset;
+      //offset += game.pf.pfVelocity * deltaTime / 1000;
+      offset += game.platformVelocity * deltaTime / 1000;
+      if (this.type != 'runner') this.hOffset = offset;
+      if (this.type == 'platform') {
+         if (this.hOffset > 2*cc.BACKGROUND_WIDTH) game.bg.turnLeft();
+         else if (this.hOffset < 0) game.bg.turnRight();
+      }
    }
 
    inView() {

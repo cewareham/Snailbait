@@ -96,3 +96,9 @@ function setStyle(canvas, css, value) {
     throw { message: "Invalid parameters passed to setStyle()" };
   }
 }
+
+function calculatePFTop(track) {
+  if      (track === 1) { return cc.TRACK_1_BASELINE; }   // 323 pixels
+  else if (track === 2) { return cc.TRACK_2_BASELINE; }   // 223 pixels
+  else if (track === 3) { return cc.TRACK_3_BASELINE; }   // 123 pixels
+}
